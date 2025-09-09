@@ -52,7 +52,7 @@ npm run build && npm start
 ```
     或是使用release
 
-⚠️ **重要**：由于浏览器CORS政策限制，必须使用HTTP服务器运行，不能直接打开HTML文件。
+**重要**：如果使用浏览器版本，由于CORS政策限制，必须使用HTTP服务器运行，不能直接打开HTML文件。
 
 ## 项目结构
 
