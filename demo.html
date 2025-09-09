@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF编辑器 - 项目演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .feature-card p {
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .tech-stack {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .tech-stack h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .tech-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tech-item strong {
+            display: block;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .demo-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .demo-video {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>PDF编辑器</h1>
+            <p>功能强大的在线PDF处理工具<br>无需安装，即开即用，专业级PDF编辑体验</p>
+            
+            <div class="hero-buttons">
+                <a href="index.html" class="btn btn-primary">
+                    <span>🚀</span> 立即体验
+                </a>
+                <a href="USER_GUIDE.md" class="btn btn-secondary">
+                    <span>📖</span> 使用指南
+                </a>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">核心功能</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">纯前端处理</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">服务器依赖</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4+</div>
+                <div class="stat-label">浏览器支持</div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <h3>PDF阅读查看</h3>
+                <p>专业的PDF渲染引擎，完美显示各种PDF文档</p>
+                <ul class="feature-list">
+                    <li>多页面浏览导航</li>
+                    <li>灵活的缩放控制</li>
+                    <li>适合页面自动调整</li>
+                    <li>高质量渲染显示</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✏️</div>
+                <h3>文本编辑</h3>
+                <p>强大的文本处理功能，轻松添加和提取文本内容</p>
+                <ul class="feature-list">
+                    <li>任意位置添加文本</li>
+                    <li>自定义字体大小</li>
+                    <li>多种颜色选择</li>
+                    <li>一键文本提取</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h3>图片插入</h3>
+                <p>支持多种方式插入图片，丰富PDF内容</p>
+                <ul class="feature-list">
+                    <li>本地图片上传</li>
+                    <li>网络图片URL</li>
+                    <li>自动尺寸优化</li>
+                    <li>JPG/PNG格式</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📑</div>
+                <h3>页面管理</h3>
+                <p>全面的页面操作功能，灵活管理PDF结构</p>
+                <ul class="feature-list">
+                    <li>新增删除页面</li>
+                    <li>页面旋转调整</li>
+                    <li>复制重复页面</li>
+                    <li>页码信息显示</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>高级工具</h3>
+                <p>专业级PDF处理工具，满足复杂编辑需求</p>
+                <ul class="feature-list">
+                    <li>PDF文件合并</li>
+                    <li>智能分割功能</li>
+                    <li>书签管理</li>
+                    <li>批量处理</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>文件操作</h3>
+                <p>多种文件处理方式，便捷的导出和分享</p>
+                <ul class="feature-list">
+                    <li>PDF文件下载</li>
+                    <li>页面图片导出</li>
+                    <li>打印功能</li>
+                    <li>一键清空重置</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="tech-stack">
+            <h2>技术架构</h2>
+            <p>基于现代Web技术构建，确保最佳性能和兼容性</p>
+            
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>PDF.js</strong>
+                    <p>Mozilla开源PDF渲染引擎，负责PDF显示和文本提取</p>
+                </div>
+                <div class="tech-item">
+                    <strong>PDF-lib</strong>
+                    <p>强大的PDF操作库，处理文档编辑和修改功能</p>
+                </div>
+                <div class="tech-item">
+                    <strong>纯JavaScript</strong>
+                    <p>ES6+语法，现代化的前端开发，无框架依赖</p>
+                </div>
+                <div class="tech-item">
+                    <strong>响应式设计</strong>
+                    <p>CSS3 + HTML5，完美适配桌面端和移动端</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2>功能演示</h2>
+            <div style="text-align: center; padding: 60px; background: #f8f9fa; border-radius: 10px;">
+                <p style="font-size: 1.2rem; color: #666; margin-bottom: 30px;">
+                    🎥 演示视频即将上线
+                </p>
+                <p style="color: #999;">
+                    展示完整的PDF编辑流程：从上传文件到编辑保存的全过程
+                </p>
+            </div>
+        </section>
+
+        <section class="hero" style="margin-top: 80px;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">立即开始使用</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 40px;">
+                无需注册，无需下载，打开浏览器即可体验专业级PDF编辑功能
+            </p>
+            <div class="hero-buttons">
+                <a href="index.html" class="btn btn-primary">
+                    <span>🎯</span> 开始编辑PDF
+                </a>
+                <a href="generate-test-pdf.html" class="btn btn-secondary">
+                    <span>🧪</span> 生成测试文件
+                </a>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

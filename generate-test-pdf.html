@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>生成测试PDF</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <h1>点击按钮生成测试PDF</h1>
+    <button onclick="createTestPDF()">生成测试PDF</button>
+    
+    <script>
+        async function createTestPDF() {
+            const { PDFDocument, StandardFonts, rgb } = PDFLib;
+            
+            // 创建新的PDF文档
+            const pdfDoc = await PDFDocument.create();
+            
+            // 嵌入字体
+            const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+            
+            // 添加第一页
+            const page1 = pdfDoc.addPage([595, 842]); // A4尺寸
+            const { width, height } = page1.getSize();
+            
+            // 添加标题
+            page1.drawText('PDF编辑器测试文档', {
+                x: 50,
+                y: height - 100,
+                size: 24,
+                font: helveticaBold,
+                color: rgb(0, 0.2, 0.8)
+            });
+            
+            // 添加副标题
+            page1.drawText('这是一个用于测试PDF编辑功能的示例文档', {
+                x: 50,
+                y: height - 140,
+                size: 14,
+                font: helveticaFont,
+                color: rgb(0.3, 0.3, 0.3)
+            });
+            
+            // 添加正文内容
+            const content = [
+                '欢迎使用PDF编辑器！',
+                '',
+                '这个工具具有以下功能：',
+                '• PDF文件的阅读和浏览',
+                '• 文本内容的提取和复制',
+                '• 在PDF中添加新的文本',
+                '• 页面的旋转、添加和删除',
+                '• 编辑后PDF文件的下载保存',
+                '',
+                '使用方法：',
+                '1. 上传PDF文件或使用这个测试文件',
+                '2. 使用控制面板中的各种功能按钮',
+                '3. 在文本模式下点击页面添加文本',
+                '4. 完成编辑后下载保存文件',
+                '',
+                '技术特性：',
+                '• 基于PDF.js实现PDF渲染显示',
+                '• 基于PDF-lib实现PDF编辑修改',
+                '• 纯前端实现，无需服务器上传',
+                '• 支持现代浏览器，响应式设计'
+            ];
+            
+            let yPosition = height - 200;
+            content.forEach(line => {
+                page1.drawText(line, {
+                    x: 50,
+                    y: yPosition,
+                    size: 12,
+                    font: helveticaFont,
+                    color: rgb(0, 0, 0)
+                });
+                yPosition -= 20;
+            });
+            
+            // 添加第二页
+            const page2 = pdfDoc.addPage([595, 842]);
+            
+            page2.drawText('第二页内容', {
+                x: 50,
+                y: height - 100,
+                size: 20,
+                font: helveticaBold,
+                color: rgb(0.8, 0.2, 0)
+            });
+            
+            const page2Content = [
+                '这是第二页的内容，用于测试多页PDF的处理能力。',
+                '',
+                '您可以在这个页面上测试以下功能：',
+                '',
+                '页面导航：',
+                '• 使用上一页/下一页按钮在页面间切换',
+                '• 观察页面信息的更新',
+                '',
+                '文本添加：',
+                '• 点击"添加文本"按钮进入文本模式',
+                '• 在页面任意位置点击添加文本',
+                '• 输入内容并确认添加',
+                '',
+                '页面操作：',
+                '• 尝试旋转当前页面',
+                '• 添加新的空白页面',
+                '• 删除不需要的页面',
+                '',
+                '文本提取：',
+                '• 提取所有页面的文本内容',
+                '• 复制文本到剪贴板使用'
+            ];
+            
+            yPosition = height - 150;
+            page2Content.forEach(line => {
+                page2.drawText(line, {
+                    x: 50,
+                    y: yPosition,
+                    size: 12,
+                    font: helveticaFont,
+                    color: rgb(0, 0, 0)
+                });
+                yPosition -= 18;
+            });
+            
+            // 添加页脚
+            [page1, page2].forEach((page, index) => {
+                page.drawText(`第 ${index + 1} 页 - PDF编辑器测试文档`, {
+                    x: 50,
+                    y: 30,
+                    size: 10,
+                    font: helveticaFont,
+                    color: rgb(0.5, 0.5, 0.5)
+                });
+                
+                page.drawText(`生成时间: ${new Date().toLocaleString('zh-CN')}`, {
+                    x: width - 200,
+                    y: 30,
+                    size: 10,
+                    font: helveticaFont,
+                    color: rgb(0.5, 0.5, 0.5)
+                });
+            });
+            
+            // 保存PDF
+            const pdfBytes = await pdfDoc.save();
+            
+            // 下载文件
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'test-sample.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('测试PDF文件已生成并下载！');
+        }
+    </script>
+</body>
+</html>

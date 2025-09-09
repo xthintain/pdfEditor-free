@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传修复工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .debug-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .test-upload {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .test-upload:hover { border-color: #007bff; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>🔧 PDF编辑器文件上传修复工具</h1>
+    
+    <div class="debug-section">
+        <h3>📊 诊断报告</h3>
+        <div id="diagnostics">检查中...</div>
+    </div>
+
+    <div class="debug-section">
+        <h3>🧪 上传功能测试</h3>
+        <div class="test-upload" id="testUpload">
+            <p>📄 点击此处测试文件上传</p>
+            <input type="file" id="testFileInput" accept=".pdf" style="display: none;">
+        </div>
+        <div id="testResult" style="margin-top: 10px;"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>🔧 快速修复</h3>
+        <button class="btn" onclick="fixUploadEvents()">修复上传事件</button>
+        <button class="btn" onclick="reinitializePDFEditor()">重新初始化编辑器</button>
+        <button class="btn" onclick="window.open('/', '_blank')">打开主应用</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>📝 修复日志</h3>
+        <div id="fixLog" style="height: 200px; overflow-y: auto; background: #000; color: #0f0; padding: 10px; font-family: monospace; font-size: 12px;">
+            准备进行诊断...<br>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('fixLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateDiagnostics(html) {
+            document.getElementById('diagnostics').innerHTML = html;
+        }
+
+        function runDiagnostics() {
+            log('开始诊断文件上传功能...');
+            
+            const issues = [];
+            const fixes = [];
+
+            // 检查主窗口中的元素
+            const uploadArea = parent.document.getElementById('uploadArea');
+            const fileInput = parent.document.getElementById('fileInput');
+            const pdfEditor = parent.window.pdfEditor;
+
+            if (!uploadArea) {
+                issues.push('❌ 上传区域元素未找到');
+            } else {
+                log('✅ 找到上传区域元素');
+            }
+
+            if (!fileInput) {
+                issues.push('❌ 文件输入元素未找到');  
+            } else {
+                log('✅ 找到文件输入元素');
+            }
+
+            if (!pdfEditor) {
+                issues.push('❌ PDF编辑器实例未找到');
+            } else {
+                log('✅ 找到PDF编辑器实例');
+            }
+
+            // 检查事件监听器
+            const hasClickListener = uploadArea && uploadArea.onclick !== null;
+            if (!hasClickListener) {
+                issues.push('❌ 上传区域缺少点击事件监听器');
+                fixes.push('需要重新绑定点击事件');
+            }
+
+            // 生成诊断报告
+            let reportHtml = '';
+            if (issues.length === 0) {
+                reportHtml = '<div class="success">✅ 所有组件正常</div>';
+            } else {
+                reportHtml = '<div class="error"><strong>发现问题:</strong><ul>';
+                issues.forEach(issue => reportHtml += `<li>${issue}</li>`);
+                reportHtml += '</ul></div>';
+                
+                if (fixes.length > 0) {
+                    reportHtml += '<div><strong>建议修复:</strong><ul>';
+                    fixes.forEach(fix => reportHtml += `<li>${fix}</li>`);
+                    reportHtml += '</ul></div>';
+                }
+            }
+
+            updateDiagnostics(reportHtml);
+            log('诊断完成');
+        }
+
+        function fixUploadEvents() {
+            log('尝试修复上传事件...');
+            
+            try {
+                const uploadArea = parent.document.getElementById('uploadArea');
+                const fileInput = parent.document.getElementById('fileInput');
+                const pdfEditor = parent.window.pdfEditor;
+
+                if (uploadArea && fileInput && pdfEditor) {
+                    // 移除旧的事件监听器
+                    uploadArea.onclick = null;
+                    
+                    // 重新绑定点击事件
+                    uploadArea.addEventListener('click', function() {
+                        log('上传区域被点击');
+                        fileInput.click();
+                    });
+
+                    // 重新绑定文件选择事件
+                    fileInput.onchange = function(e) {
+                        log('文件被选择: ' + e.target.files[0]?.name);
+                        if (e.target.files[0]) {
+                            pdfEditor.handleFileSelect(e.target.files[0]);
+                        }
+                    };
+
+                    log('✅ 上传事件重新绑定成功');
+                    updateDiagnostics('<div class="success">✅ 上传功能已修复</div>');
+                } else {
+                    log('❌ 修复失败：缺少必要元素');
+                    updateDiagnostics('<div class="error">❌ 修复失败：缺少必要元素</div>');
+                }
+            } catch (error) {
+                log('❌ 修复过程中出错: ' + error.message);
+                updateDiagnostics('<div class="error">❌ 修复失败: ' + error.message + '</div>');
+            }
+        }
+
+        function reinitializePDFEditor() {
+            log('尝试重新初始化PDF编辑器...');
+            
+            try {
+                if (parent.window.pdfEditor) {
+                    // 重新初始化编辑器
+                    parent.window.pdfEditor.setupElements();
+                    parent.window.pdfEditor.setupEventListeners();
+                    
+                    log('✅ PDF编辑器重新初始化成功');
+                    updateDiagnostics('<div class="success">✅ PDF编辑器已重新初始化</div>');
+                } else {
+                    // 创建新实例
+                    parent.window.pdfEditor = new parent.PDFEditor();
+                    log('✅ 创建新的PDF编辑器实例');
+                }
+            } catch (error) {
+                log('❌ 重新初始化失败: ' + error.message);
+                updateDiagnostics('<div class="error">❌ 重新初始化失败: ' + error.message + '</div>');
+            }
+        }
+
+        // 测试上传功能
+        document.getElementById('testUpload').addEventListener('click', function() {
+            document.getElementById('testFileInput').click();
+        });
+
+        document.getElementById('testFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const resultDiv = document.getElementById('testResult');
+            
+            if (file) {
+                log('测试文件选择成功: ' + file.name);
+                resultDiv.innerHTML = `<div class="success">✅ 测试成功！选择了文件: ${file.name}</div>`;
+                
+                // 尝试传递给主应用
+                if (parent.window.pdfEditor) {
+                    parent.window.pdfEditor.handleFileSelect(file);
+                    log('文件已传递给PDF编辑器');
+                }
+            } else {
+                resultDiv.innerHTML = '<div class="error">❌ 未选择文件</div>';
+            }
+        });
+
+        // 页面加载后自动诊断
+        setTimeout(runDiagnostics, 1000);
+    </script>
+</body>
+</html>

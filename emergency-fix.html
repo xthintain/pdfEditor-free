@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>紧急修复 - 文件上传按钮</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .fix-panel {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px 4px;
+        }
+        .btn:hover { background: #218838; }
+        .btn.danger { background: #dc3545; }
+        .btn.danger:hover { background: #c82333; }
+        .test-area {
+            border: 2px dashed #007bff;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .test-area:hover { background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="fix-panel">
+        <h1>🚨 紧急修复 - 文件上传功能</h1>
+        
+        <div id="statusPanel" class="status warning">
+            正在检测问题...
+        </div>
+
+        <div class="test-area" onclick="testDirectUpload()">
+            <h3>📂 直接测试文件上传</h3>
+            <p>点击这里选择PDF文件</p>
+            <input type="file" id="directFileInput" accept=".pdf" style="display: none;">
+        </div>
+
+        <h3>🔧 修复选项</h3>
+        <button class="btn" onclick="quickFix()">🚀 一键修复</button>
+        <button class="btn" onclick="deepFix()">🔨 深度修复</button>
+        <button class="btn" onclick="resetAll()">🔄 重置所有</button>
+        <button class="btn danger" onclick="forceReload()">⚡ 强制重载</button>
+
+        <div id="logArea" style="background: #000; color: #0f0; padding: 15px; margin-top: 20px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px;">
+            等待操作...<br>
+        </div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const logArea = document.getElementById('logArea');
+            const time = new Date().toLocaleTimeString();
+            logArea.innerHTML += `[${time}] ${msg}<br>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function updateStatus(type, message) {
+            const panel = document.getElementById('statusPanel');
+            panel.className = `status ${type}`;
+            panel.innerHTML = message;
+        }
+
+        // 直接测试文件上传
+        function testDirectUpload() {
+            const fileInput = document.getElementById('directFileInput');
+            fileInput.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    log(`✅ 文件选择成功: ${file.name}`);
+                    updateStatus('success', `文件已选择: ${file.name}`);
+                    
+                    // 尝试传递给主窗口
+                    try {
+                        if (window.parent && window.parent.pdfEditor) {
+                            window.parent.pdfEditor.handleFileSelect(file);
+                            log('✅ 文件已传递给PDF编辑器');
+                            updateStatus('success', '文件上传成功！PDF编辑器已加载文件。');
+                        } else {
+                            log('⚠️ 未找到PDF编辑器实例');
+                            updateStatus('warning', '文件选择成功但PDF编辑器未就绪');
+                        }
+                    } catch (error) {
+                        log(`❌ 传递文件失败: ${error.message}`);
+                    }
+                }
+            };
+            fileInput.click();
+        }
+
+        // 一键修复
+        function quickFix() {
+            log('🚀 开始一键修复...');
+            
+            try {
+                const mainWindow = window.parent;
+                const uploadArea = mainWindow.document.getElementById('uploadArea');
+                const fileInput = mainWindow.document.getElementById('fileInput');
+
+                if (!uploadArea || !fileInput) {
+                    log('❌ 未找到上传元素');
+                    updateStatus('error', '未找到上传元素，尝试深度修复');
+                    return;
+                }
+
+                // 直接设置onclick事件
+                uploadArea.onclick = function(e) {
+                    log('📂 上传区域点击事件触发');
+                    e.preventDefault();
+                    fileInput.click();
+                };
+
+                fileInput.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        log(`📄 文件被选择: ${file.name}`);
+                        if (mainWindow.pdfEditor) {
+                            mainWindow.pdfEditor.handleFileSelect(file);
+                        }
+                    }
+                };
+
+                log('✅ 一键修复完成');
+                updateStatus('success', '修复完成！现在尝试点击主页面的上传按钮');
+                
+            } catch (error) {
+                log(`❌ 一键修复失败: ${error.message}`);
+                updateStatus('error', '一键修复失败，请尝试深度修复');
+            }
+        }
+
+        // 深度修复
+        function deepFix() {
+            log('🔨 开始深度修复...');
+            
+            try {
+                const mainWindow = window.parent;
+                
+                // 重新创建上传区域的HTML
+                const uploadArea = mainWindow.document.getElementById('uploadArea');
+                if (uploadArea) {
+                    uploadArea.innerHTML = `
+                        <div class="upload-content">
+                            <i class="upload-icon">📄</i>
+                            <h3>上传PDF文件 [已修复]</h3>
+                            <p>点击选择文件或拖拽文件到此处</p>
+                            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                            <button id="uploadButton" style="margin-top: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">选择PDF文件</button>
+                        </div>
+                    `;
+                    
+                    // 获取新的元素
+                    const newFileInput = mainWindow.document.getElementById('fileInput');
+                    const uploadButton = mainWindow.document.getElementById('uploadButton');
+                    
+                    // 绑定多个事件
+                    uploadArea.onclick = function() {
+                        log('📂 上传区域点击');
+                        newFileInput.click();
+                    };
+                    
+                    uploadButton.onclick = function() {
+                        log('🔘 上传按钮点击');
+                        newFileInput.click();
+                    };
+                    
+                    newFileInput.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            log(`📄 深度修复: 文件被选择 - ${file.name}`);
+                            if (mainWindow.pdfEditor) {
+                                mainWindow.pdfEditor.handleFileSelect(file);
+                            }
+                        }
+                    };
+                    
+                    log('✅ 深度修复完成');
+                    updateStatus('success', '深度修复完成！上传区域已重新构建');
+                }
+                
+            } catch (error) {
+                log(`❌ 深度修复失败: ${error.message}`);
+                updateStatus('error', '深度修复失败，请尝试重置');
+            }
+        }
+
+        // 重置所有
+        function resetAll() {
+            log('🔄 重置所有功能...');
+            
+            try {
+                const mainWindow = window.parent;
+                
+                if (mainWindow.pdfEditor) {
+                    // 重新初始化编辑器
+                    mainWindow.pdfEditor.validateElements();
+                    log('✅ PDF编辑器已重新验证');
+                }
+                
+                // 刷新页面元素
+                setTimeout(() => {
+                    mainWindow.location.reload();
+                    log('✅ 页面已重新加载');
+                }, 1000);
+                
+                updateStatus('success', '重置完成，页面将重新加载');
+                
+            } catch (error) {
+                log(`❌ 重置失败: ${error.message}`);
+                updateStatus('error', '重置失败');
+            }
+        }
+
+        // 强制重载
+        function forceReload() {
+            log('⚡ 执行强制重载...');
+            window.parent.location.reload(true);
+        }
+
+        // 页面加载后自动检测
+        window.onload = function() {
+            log('🔍 开始自动检测...');
+            
+            setTimeout(() => {
+                try {
+                    const mainWindow = window.parent;
+                    const uploadArea = mainWindow.document.getElementById('uploadArea');
+                    const fileInput = mainWindow.document.getElementById('fileInput');
+                    const pdfEditor = mainWindow.pdfEditor;
+                    
+                    let issues = 0;
+                    
+                    if (!uploadArea) { 
+                        log('❌ 上传区域未找到'); 
+                        issues++; 
+                    } else { 
+                        log('✅ 上传区域存在'); 
+                    }
+                    
+                    if (!fileInput) { 
+                        log('❌ 文件输入未找到'); 
+                        issues++; 
+                    } else { 
+                        log('✅ 文件输入存在'); 
+                    }
+                    
+                    if (!pdfEditor) { 
+                        log('❌ PDF编辑器实例未找到'); 
+                        issues++; 
+                    } else { 
+                        log('✅ PDF编辑器实例存在'); 
+                    }
+                    
+                    if (issues === 0) {
+                        updateStatus('success', '所有组件正常，可能是事件绑定问题');
+                        log('💡 建议：尝试一键修复来重新绑定事件');
+                    } else {
+                        updateStatus('error', `发现 ${issues} 个问题，建议进行深度修复`);
+                    }
+                    
+                } catch (error) {
+                    log(`❌ 检测过程出错: ${error.message}`);
+                    updateStatus('error', '检测失败，请手动修复');
+                }
+            }, 500);
+        };
+    </script>
+</body>
+</html>

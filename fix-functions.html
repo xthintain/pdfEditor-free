@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF编辑器 - 功能验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .fix-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px 4px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="fix-container">
+        <h1>🔧 PDF编辑器功能修复工具</h1>
+        <p>此工具将检查并修复PDF编辑器的连续查看和文本标记功能</p>
+
+        <div class="test-result" id="status">
+            <h3>📊 功能检查状态</h3>
+            <div id="continuous-status" class="status warning">连续查看功能：检查中...</div>
+            <div id="highlight-status" class="status warning">文本标记功能：检查中...</div>
+        </div>
+
+        <div>
+            <h3>🛠️ 快速修复选项</h3>
+            <button class="btn" onclick="checkFunctions()">🔍 检查所有功能</button>
+            <button class="btn" onclick="fixContinuousView()">🔄 修复连续查看</button>
+            <button class="btn" onclick="fixHighlightMode()">🎨 修复文本标记</button>
+            <button class="btn" onclick="openMainApp()">📖 打开主应用</button>
+        </div>
+
+        <div class="test-result">
+            <h3>📝 修复日志</h3>
+            <div id="fix-log" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #000; color: #0f0; padding: 10px; border-radius: 4px;">
+                等待检查...<br>
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>💡 使用说明</h3>
+            <ol>
+                <li><strong>连续查看模式：</strong>上传PDF后，勾选"连续查看模式"复选框</li>
+                <li><strong>文本标记：</strong>点击"标记文本"按钮，然后在PDF上拖拽选择要标记的区域</li>
+                <li><strong>调试：</strong>在浏览器控制台中运行 <code>pdfEditor.debugFunctions()</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('fix-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(element, status, message) {
+            const statusDiv = document.getElementById(element);
+            statusDiv.className = `status ${status}`;
+            statusDiv.textContent = message;
+        }
+
+        function checkFunctions() {
+            log('开始检查PDF编辑器功能...');
+            
+            // 检查连续查看功能
+            const continuousCheckbox = parent.document.getElementById('continuousViewToggle');
+            const continuousContainer = parent.document.getElementById('continuousContainer');
+            const continuousView = parent.document.getElementById('continuousView');
+            
+            if (continuousCheckbox && continuousContainer && continuousView) {
+                updateStatus('continuous-status', 'success', '连续查看功能：✅ 正常');
+                log('✅ 连续查看功能检查通过');
+            } else {
+                updateStatus('continuous-status', 'error', '连续查看功能：❌ 异常');
+                log('❌ 连续查看功能检查失败');
+                if (!continuousCheckbox) log('- 缺少复选框元素 (continuousViewToggle)');
+                if (!continuousContainer) log('- 缺少容器元素 (continuousContainer)');
+                if (!continuousView) log('- 缺少查看元素 (continuousView)');
+            }
+            
+            // 检查文本标记功能
+            const highlightBtn = parent.document.getElementById('highlightText');
+            const highlightPanel = parent.document.querySelector('.highlight-input-group');
+            const highlightColor = parent.document.getElementById('highlightColor');
+            
+            if (highlightBtn && highlightPanel && highlightColor) {
+                updateStatus('highlight-status', 'success', '文本标记功能：✅ 正常');
+                log('✅ 文本标记功能检查通过');
+            } else {
+                updateStatus('highlight-status', 'error', '文本标记功能：❌ 异常');
+                log('❌ 文本标记功能检查失败');
+                if (!highlightBtn) log('- 缺少标记按钮 (highlightText)');
+                if (!highlightPanel) log('- 缺少控制面板 (.highlight-input-group)');
+                if (!highlightColor) log('- 缺少颜色选择器 (highlightColor)');
+            }
+            
+            log('功能检查完成');
+        }
+
+        function fixContinuousView() {
+            log('尝试修复连续查看功能...');
+            
+            try {
+                if (parent.pdfEditor) {
+                    // 重新初始化连续查看相关元素
+                    const checkbox = parent.document.getElementById('continuousViewToggle');
+                    if (checkbox) {
+                        checkbox.addEventListener('change', function(e) {
+                            parent.pdfEditor.toggleContinuousView(e.target.checked);
+                        });
+                        log('✅ 重新绑定连续查看事件监听器');
+                    }
+                    
+                    log('✅ 连续查看功能修复完成');
+                    updateStatus('continuous-status', 'success', '连续查看功能：✅ 已修复');
+                } else {
+                    log('❌ 未找到pdfEditor实例');
+                }
+            } catch (error) {
+                log(`❌ 修复失败: ${error.message}`);
+            }
+        }
+
+        function fixHighlightMode() {
+            log('尝试修复文本标记功能...');
+            
+            try {
+                if (parent.pdfEditor) {
+                    // 重新初始化标记相关元素
+                    const btn = parent.document.getElementById('highlightText');
+                    if (btn) {
+                        btn.addEventListener('click', function() {
+                            parent.pdfEditor.toggleHighlightMode();
+                        });
+                        log('✅ 重新绑定标记按钮事件');
+                    }
+                    
+                    const confirmBtn = parent.document.getElementById('confirmHighlight');
+                    const cancelBtn = parent.document.getElementById('cancelHighlight');
+                    
+                    if (confirmBtn) {
+                        confirmBtn.addEventListener('click', function() {
+                            parent.pdfEditor.confirmHighlight();
+                        });
+                        log('✅ 重新绑定确认按钮事件');
+                    }
+                    
+                    if (cancelBtn) {
+                        cancelBtn.addEventListener('click', function() {
+                            parent.pdfEditor.cancelHighlight();
+                        });
+                        log('✅ 重新绑定取消按钮事件');
+                    }
+                    
+                    log('✅ 文本标记功能修复完成');
+                    updateStatus('highlight-status', 'success', '文本标记功能：✅ 已修复');
+                } else {
+                    log('❌ 未找到pdfEditor实例');
+                }
+            } catch (error) {
+                log(`❌ 修复失败: ${error.message}`);
+            }
+        }
+
+        function openMainApp() {
+            window.open('/', '_blank');
+            log('📖 已在新窗口打开主应用');
+        }
+
+        // 页面加载时自动检查
+        setTimeout(checkFunctions, 1000);
+    </script>
+</body>
+</html>

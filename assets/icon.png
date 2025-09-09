@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#667eea"/>
+  <rect x="16" y="12" width="32" height="40" rx="2" fill="white"/>
+  <path d="M40,12 L48,20 L40,20 Z" fill="#f0f0f0"/>
+  <line x1="20" y1="24" x2="36" y2="24" stroke="#667eea" stroke-width="1"/>
+  <line x1="20" y1="28" x2="44" y2="28" stroke="#667eea" stroke-width="1"/>
+  <line x1="20" y1="32" x2="40" y2="32" stroke="#667eea" stroke-width="1"/>
+  <line x1="20" y1="36" x2="44" y2="36" stroke="#667eea" stroke-width="1"/>
+  <circle cx="44" cy="44" r="5" fill="#ff6b6b"/>
+  <path d="M42,42 L46,46 M42,46 L46,42" stroke="white" stroke-width="1"/>
+  <text x="32" y="58" text-anchor="middle" fill="white" font-family="Arial" font-size="6" font-weight="bold">PDF</text>
+</svg>

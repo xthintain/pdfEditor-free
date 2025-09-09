@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF编辑器 - 专业的PDF处理工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>PDF编辑器</h1>
+            <p>功能完整的PDF编辑、读取和文本提取工具</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 文件上传区域 -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="upload-icon">📄</i>
+                        <h3>上传PDF文件</h3>
+                        <p>点击选择文件或拖拽文件到此处</p>
+                        <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 操作面板 -->
+            <section class="control-panel" id="controlPanel" style="display: none;">
+                <div class="panel-group">
+                    <h3>PDF查看</h3>
+                    <div class="controls">
+                        <button id="prevPage" class="btn">上一页</button>
+                        <span id="pageInfo">页面 1 / 1</span>
+                        <button id="nextPage" class="btn">下一页</button>
+                        <button id="zoomIn" class="btn">放大</button>
+                        <button id="zoomOut" class="btn">缩小</button>
+                        <button id="fitToPage" class="btn">适合页面</button>
+                        <br><br>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="continuousViewToggle"> 连续查看模式
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-group">
+                    <h3>文本操作</h3>
+                    <div class="controls">
+                        <button id="extractText" class="btn">提取文本</button>
+                        <button id="addText" class="btn">添加文本</button>
+                        <button id="highlightText" class="btn">标记文本</button>
+                        <div class="text-input-group" style="display: none;">
+                            <input type="text" id="textInput" placeholder="输入要添加的文本">
+                            <select id="fontSize">
+                                <option value="8">8px</option>
+                                <option value="10">10px</option>
+                                <option value="12" selected>12px</option>
+                                <option value="14">14px</option>
+                                <option value="16">16px</option>
+                                <option value="18">18px</option>
+                                <option value="20">20px</option>
+                                <option value="24">24px</option>
+                            </select>
+                            <input type="color" id="textColor" value="#000000">
+                            <button id="confirmText" class="btn">确认添加</button>
+                        </div>
+                        <div class="highlight-input-group" style="display: none;">
+                            <select id="highlightType">
+                                <option value="highlight">高亮标记</option>
+                                <option value="underline">下划线</option>
+                            </select>
+                            <input type="color" id="highlightColor" value="#ffff00" title="标记颜色">
+                            <input type="range" id="highlightOpacity" min="0.1" max="1" step="0.1" value="0.5" title="透明度">
+                            <button id="confirmHighlight" class="btn">确认标记</button>
+                            <button id="cancelHighlight" class="btn secondary">取消</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group">
+                    <h3>图片操作</h3>
+                    <div class="controls">
+                        <button id="addImage" class="btn">插入图片</button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <button id="addImageFromUrl" class="btn">从URL插入</button>
+                        <div class="image-input-group" style="display: none;">
+                            <input type="url" id="imageUrl" placeholder="图片URL">
+                            <button id="confirmImageUrl" class="btn">确认插入</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group">
+                    <h3>页面操作</h3>
+                    <div class="controls">
+                        <button id="addPage" class="btn">新增页面</button>
+                        <button id="deletePage" class="btn">删除页面</button>
+                        <button id="rotatePage" class="btn">旋转页面</button>
+                        <button id="duplicatePage" class="btn">复制页面</button>
+                    </div>
+                </div>
+
+                <div class="panel-group">
+                    <h3>高级工具</h3>
+                    <div class="controls">
+                        <button id="mergePdf" class="btn">合并PDF</button>
+                        <input type="file" id="mergePdfInput" accept=".pdf" multiple style="display: none;">
+                        <button id="splitPdf" class="btn">分割PDF</button>
+                        <button id="addBookmark" class="btn">添加书签</button>
+                        <div class="bookmark-input-group" style="display: none;">
+                            <input type="text" id="bookmarkTitle" placeholder="书签标题">
+                            <button id="confirmBookmark" class="btn">确认书签</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group">
+                    <h3>文件操作</h3>
+                    <div class="controls">
+                        <button id="downloadPdf" class="btn primary">下载PDF</button>
+                        <button id="printPdf" class="btn">打印PDF</button>
+                        <button id="saveAsImage" class="btn">保存为图片</button>
+                        <button id="clearAll" class="btn secondary">清空重置</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PDF显示区域 -->
+            <section class="viewer-section" id="viewerSection" style="display: none;">
+                <div class="pdf-viewer" id="pdfViewer">
+                    <!-- 单页模式 -->
+                    <div class="single-page-view" id="singlePageView">
+                        <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+                    </div>
+                    
+                    <!-- 连续查看模式 -->
+                    <div class="continuous-view" id="continuousView" style="display: none;">
+                        <div class="continuous-container" id="continuousContainer">
+                            <!-- 动态生成的页面canvas会在这里 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 文本提取结果 -->
+            <section class="text-section" id="textSection" style="display: none;">
+                <h3>提取的文本内容</h3>
+                <textarea id="extractedText" readonly></textarea>
+                <button id="copyText" class="btn">复制文本</button>
+            </section>
+        </div>
+    </div>
+
+    <!-- 加载指示器 -->
+    <div id="loadingIndicator" class="loading" style="display: none;">
+        <div class="loader"></div>
+        <p>处理中，请稍候...</p>
+    </div>
+
+    <!-- Toast消息 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 专注阅读模式 -->
+    <div id="readingMode" class="reading-mode" style="display: none;">
+        <!-- 顶部工具栏 -->
+        <div class="reading-toolbar">
+            <div class="toolbar-left">
+                <button id="backToEditor" class="btn secondary">← 返回编辑</button>
+                <span id="readingPageInfo" class="page-info">页面 1 / 1</span>
+            </div>
+            <div class="toolbar-center">
+                <div class="drawing-tools">
+                    <button id="drawingPen" class="btn drawing-btn" data-tool="pen">
+                        ✏️ 画笔
+                    </button>
+                    <button id="drawingEraser" class="btn drawing-btn" data-tool="eraser">
+                        🧽 橡皮擦
+                    </button>
+                    <button id="drawingRect" class="btn drawing-btn" data-tool="rect">
+                        ⬛ 矩形遮盖
+                    </button>
+                    <input type="color" id="drawingColor" value="#ff0000" title="选择画笔颜色">
+                    <input type="range" id="drawingSize" min="2" max="20" value="3" title="画笔粗细">
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <button id="convertToWordReading" class="btn primary">🔄 转换Word</button>
+                <button id="resetReadingPosition" class="btn">🔄 重置位置</button>
+                <button id="downloadPdfReading" class="btn primary">💾 下载</button>
+                <button id="zoomInReading" class="btn">🔍+</button>
+                <button id="zoomOutReading" class="btn">🔍-</button>
+            </div>
+        </div>
+
+        <!-- PDF滚动查看区域 -->
+        <div class="reading-container" id="readingContainer">
+            <div class="pdf-scroll-view" id="pdfScrollView">
+                <!-- PDF页面将动态加载到这里 -->
+            </div>
+        </div>
+
+        <!-- 标记输入区域 -->
+    </div>
+
+    <!-- 分割PDF弹窗 -->
+    <div id="splitModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>分割PDF</h3>
+                <button class="modal-close" id="closeSplitModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="split-options">
+                    <h4>分割方式</h4>
+                    <label class="radio-label">
+                        <input type="radio" name="splitType" value="pages" checked>
+                        <span>按页数分割</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="splitType" value="range">
+                        <span>按范围分割</span>
+                    </label>
+                    
+                    <div id="splitByPages" class="split-input">
+                        <label>每个文件包含页数:</label>
+                        <input type="number" id="pagesPerFile" min="1" value="1">
+                    </div>
+                    
+                    <div id="splitByRange" class="split-input" style="display: none;">
+                        <label>页面范围 (例如: 1-3, 4-6):</label>
+                        <input type="text" id="pageRanges" placeholder="1-3, 4-6, 7-10">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmSplit" class="btn primary">开始分割</button>
+                <button id="cancelSplit" class="btn secondary">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 脚本引入 -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <!-- Word文档生成库 - docx -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script>
+        // 设置PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    </script>
+    <script src="js/pdfEditor.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF标记保存测试</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .status-icon {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        .completed {
+            color: #27ae60;
+        }
+        .pending {
+            color: #f39c12;
+        }
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .test-info {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .start-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1 class="test-title">📝 PDF标记保存功能测试</h1>
+        
+        <div class="test-info">
+            <p><strong>重要改进：</strong>标记现在直接保存到PDF文件中，不再使用localStorage!</p>
+        </div>
+        
+        <h2>🎯 已实现功能</h2>
+        <ul class="feature-list">
+            <li>
+                <span class="status-icon completed">✅</span>
+                标记<span class="highlight">直接保存到PDF文件</span>中，永久保存
+            </li>
+            <li>
+                <span class="status-icon completed">✅</span>
+                涂改工具自动将绘图层嵌入PDF页面
+            </li>
+            <li>
+                <span class="status-icon completed">✅</span>
+                支持画笔、橡皮擦、矩形遮盖工具
+            </li>
+            <li>
+                <span class="status-icon completed">✅</span>
+                标记与原PDF内容完美融合
+            </li>
+            <li>
+                <span class="status-icon completed">✅</span>
+                移除localStorage依赖，简化代码架构
+            </li>
+        </ul>
+
+        <h2>🔧 测试步骤</h2>
+        <ol>
+            <li>打开PDF文件，进入阅读模式</li>
+            <li>选择涂改工具（画笔/橡皮擦/矩形）</li>
+            <li>在PDF页面上进行标记</li>
+            <li>标记会立即保存到PDF文件中</li>
+            <li>下载PDF文件查看标记已永久保存</li>
+        </ol>
+
+        <h2>⚡ 功能优势</h2>
+        <ul class="feature-list">
+            <li>
+                <span class="status-icon completed">💾</span>
+                <strong>永久保存：</strong>标记直接保存在PDF文件中，不会丢失
+            </li>
+            <li>
+                <span class="status-icon completed">🔒</span>
+                <strong>进程独立：</strong>仅在当前应用中有效，保护隐私
+            </li>
+            <li>
+                <span class="status-icon completed">⚡</span>
+                <strong>实时保存：</strong>每次涂改操作完成立即保存
+            </li>
+            <li>
+                <span class="status-icon completed">🎨</span>
+                <strong>高质量：</strong>支持高DPI显示，标记清晰精确
+            </li>
+        </ul>
+
+        <button class="start-btn" onclick="window.location.href='/'">🚀 开始测试 PDF 标记功能</button>
+    </div>
+
+    <div class="test-card">
+        <h2>📋 技术说明</h2>
+        <p><strong>标记保存机制：</strong></p>
+        <ul>
+            <li>涂改完成后，将Canvas内容转换为PNG图像</li>
+            <li>使用PDF-lib将图像直接嵌入到PDF页面</li>
+            <li>调用updatePdfDisplay()更新显示</li>
+            <li>标记成为PDF文件的一部分，永久保存</li>
+        </ul>
+        
+        <p><strong>与原方案对比：</strong></p>
+        <ul>
+            <li>❌ 原方案：标记保存在localStorage中，应用重启后丢失</li>
+            <li>✅ 新方案：标记保存在PDF文件中，永久保存且可下载</li>
+        </ul>
+    </div>
+</body>
+</html>

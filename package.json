@@ -1,0 +1,83 @@
+{
+  "name": "pdf-editor-desktop",
+  "version": "1.0.0",
+  "description": "专业的PDF编辑器桌面应用 - 支持热重载开发",
+  "main": "electron/main.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron-pack": "npm run build && electron-builder",
+    "dist": "npm run build && electron-builder --publish=never",
+    "start": "npm run electron-dev",
+    "start-dev": "npm run electron-dev",
+    "start-direct": "electron ."
+  },
+  "keywords": ["pdf", "editor", "desktop", "electron", "hot-reload"],
+  "author": "PDF Editor Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.0",
+    "concurrently": "^8.2.0",
+    "wait-on": "^7.2.0",
+    "@vitejs/plugin-legacy": "^5.0.0"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^3.11.174"
+  },
+  "build": {
+    "appId": "com.pdfeditor.desktop",
+    "productName": "PDF Editor Pro",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "public/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "publisherName": "PDF Editor Team",
+      "verifyUpdateCodeSignature": false
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": null,
+      "uninstallerIcon": null,
+      "installerHeaderIcon": null,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "portable": {
+      "artifactName": "PDF-Editor-Pro-${version}-portable.exe"
+    },
+    "compression": "normal",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+  }
+}
