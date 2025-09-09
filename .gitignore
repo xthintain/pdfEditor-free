@@ -92,4 +92,4 @@ public/
 # Cache directories
 .cache/
 .parcel-cache/
-.CLAUDE.md
+CLAUDE.md

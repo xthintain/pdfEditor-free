@@ -1,1 +1,0 @@
-Test script for auto-buffer functionality has been created
